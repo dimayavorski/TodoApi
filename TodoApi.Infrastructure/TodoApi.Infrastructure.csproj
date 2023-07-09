@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>abada9ac-f20f-462b-9c12-4eeff14007bc</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MessageConsumer\" />
+    <None Remove="Options\" />
+    <None Remove="Handlers\" />
+    <None Remove="Enums\" />
+    <None Remove="Options\AWS\" />
+    <None Remove="Options\Azure\" />
+    <None Remove="Messages\" />
+    <None Remove="Secrets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MessageConsumer\" />
+    <Folder Include="Options\" />
+    <Folder Include="Handlers\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Options\AWS\" />
+    <Folder Include="Options\Azure\" />
+    <Folder Include="Messages\" />
+    <Folder Include="Secrets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.103.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="MediatR" Version="12.1.0" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProfileApi.Core\ProfileApi.Core.csproj" />
+    <ProjectReference Include="..\TodoApi.Application\TodoApi.Application.csproj" />
+  </ItemGroup>
+</Project>
