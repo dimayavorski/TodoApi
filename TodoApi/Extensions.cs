@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using Amazon.Runtime;
+using Microsoft.AspNetCore.Diagnostics;
 using TodoApi.Infrastructure.AWS.Options;
 using TodoApi.Infrastructure.Enums;
 using TodoApi.Infrastructure.MessageConsumer;
@@ -51,6 +53,32 @@ namespace TodoApi
             serviceCollection.AddSingleton(appSettings);
             serviceCollection.AddTransient<IMessageConsumerFactory, MessageConsumerFactory>();
             return serviceCollection;
+        }
+
+        public static IApplicationBuilder ConfigureExceptionHandler(this IApplicationBuilder app)
+        {
+
+            app.UseExceptionHandler(builder =>
+            {
+                builder.Run(async context =>
+                    {
+                    var response = context.Response;
+                    response.ContentType = "application/json";
+
+
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    var excpetion = contextFeature?.Error;
+                    if (excpetion != null)
+                    { 
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+
+                        await response.WriteAsync("Exception occured " + excpetion.Message);
+                    }
+
+                });
+            });
+            return app;
         }
     }
 }

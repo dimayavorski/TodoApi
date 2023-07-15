@@ -1,15 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TodoApi.Application.Common.Models;
 using TodoApi.Application.Queries;
-using TodoApi.Core.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
-    public class TodoController : Controller
+    [ApiController]
+    public class TodoController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -33,15 +32,16 @@ namespace TodoApi.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateTodoCommand createTodoCommand)
+        public async Task<IActionResult> Post(CreateTodoCommand createTodoCommand, [FromForm] IFormFile file)
         {
-            var result = await _mediator.Send(createTodoCommand);
-            if (result.IsFailed)
-            {
-                return BadRequest(result.Errors);
-            }
+            //var result = await _mediator.Send(createTodoCommand);
+            //if (result.IsFailed)
+            //{
+            //    return BadRequest(result.Errors);
+            //}
 
-            return Ok(result.Value);
+            //return Ok(result.Value);
+            return Ok();
 
         }
 

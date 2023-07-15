@@ -10,22 +10,26 @@
   <ItemGroup>
     <None Remove="MessageConsumer\" />
     <None Remove="Options\" />
-    <None Remove="Handlers\" />
     <None Remove="Enums\" />
     <None Remove="Options\AWS\" />
     <None Remove="Options\Azure\" />
     <None Remove="Messages\" />
     <None Remove="Secrets\" />
+    <None Remove="Services\" />
+    <None Remove="Services\Aws\" />
+    <None Remove="Services\Azure\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MessageConsumer\" />
     <Folder Include="Options\" />
-    <Folder Include="Handlers\" />
     <Folder Include="Enums\" />
     <Folder Include="Options\AWS\" />
     <Folder Include="Options\Azure\" />
     <Folder Include="Messages\" />
     <Folder Include="Secrets\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Aws\" />
+    <Folder Include="Services\Azure\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.SQS" Version="3.7.103.7" />
@@ -33,6 +37,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="MediatR" Version="12.1.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.7" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.107.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProfileApi.Core\ProfileApi.Core.csproj" />
