@@ -1,12 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Amazon.Runtime;
 using Microsoft.AspNetCore.Diagnostics;
-using TodoApi.Infrastructure.AWS.Options;
-using TodoApi.Infrastructure.Enums;
+using TodoApi.Application.Common.Enums;
+using TodoApi.Application.Common.Interfaces;
+using TodoApi.Application.Common.Options;
+using TodoApi.Application.Common.Options.Aws;
 using TodoApi.Infrastructure.MessageConsumer;
-using TodoApi.Infrastructure.Options;
-using TodoApi.Infrastructure.Options.AWS;
 using TodoApi.Infrastructure.Secrets;
 
 namespace TodoApi
@@ -31,7 +30,7 @@ namespace TodoApi
                             Secret = credentialsObject.SecretKey,
                             AwsRegion = "eu-west-2"
                         };
-                        serviceCollection.AddOptions<AwsCredentialsOptions>();
+
                         serviceCollection.Configure<AwsCredentialsOptions>(options =>
                         {
                             options.AccessKey = credentialOptions.AccessKey;

@@ -14,6 +14,9 @@
     <None Remove="Common\MappingProfiles\" />
     <None Remove="Common\Models\" />
     <None Remove="Commands\Handlers\" />
+    <None Remove="Common\Options\" />
+    <None Remove="Common\Enums\" />
+    <None Remove="Common\Messages\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\" />
@@ -23,6 +26,9 @@
     <Folder Include="Common\MappingProfiles\" />
     <Folder Include="Common\Models\" />
     <Folder Include="Commands\Handlers\" />
+    <Folder Include="Common\Options\" />
+    <Folder Include="Common\Enums\" />
+    <Folder Include="Common\Messages\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.1.0" />

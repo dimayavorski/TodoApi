@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TodoApi.Application.Commands.Handlers;
 using TodoApi.Application.Queries;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,45 +17,48 @@ namespace TodoApi.Controllers
         {
             _mediator = mediator;
         }
-        // GET: api/values
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var getAllTodosQuery = new GetAllTodosQuery();
+            return Ok(await _mediator.Send(getAllTodosQuery));
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return "value";
+            var getTodoQuery = new GetTodoQuery(id);
+            var todo = await _mediator.Send(getTodoQuery);
+            return Ok(todo);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateTodoCommand createTodoCommand, [FromForm] IFormFile file)
+        public async Task<IActionResult> Post(CreateTodoCommand createTodoCommand)
         {
-            //var result = await _mediator.Send(createTodoCommand);
-            //if (result.IsFailed)
-            //{
-            //    return BadRequest(result.Errors);
-            //}
+            var result = await _mediator.Send(createTodoCommand);
 
-            //return Ok(result.Value);
+            return Ok(result);
+
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(UpdateTodoCommand updateTodoCommand)
+        {
+           var result = await _mediator.Send(updateTodoCommand);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var deleteTodoCommand = new DeleteTodoCommand(id);
+
+            await _mediator.Send(deleteTodoCommand);
+
             return Ok();
-
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

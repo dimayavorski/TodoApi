@@ -21,7 +21,7 @@ namespace TodoApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var getFileRequest = new GetFileRequest(id);
+            var getFileRequest = new GetFileQuery(id);
             var result = await _mediator.Send(getFileRequest);
             return File(result.FileStream, result.ContentType);
         }

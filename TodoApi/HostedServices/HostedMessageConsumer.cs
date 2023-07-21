@@ -1,6 +1,5 @@
-﻿using System;
-using TodoApi.Infrastructure.MessageConsumer;
-using TodoApi.Infrastructure.Options;
+﻿using TodoApi.Application.Common.Interfaces;
+using TodoApi.Application.Common.Options;
 
 namespace TodoApi.HostedServices
 {

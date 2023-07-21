@@ -1,5 +1,7 @@
 ﻿using System;
 using AutoMapper;
+using TodoApi.Application.Commands.Handlers;
+using TodoApi.Application.Common.Messages;
 using TodoApi.Application.Common.Models;
 using TodoApi.Application.Queries;
 using TodoApi.Core.Entities;
@@ -11,7 +13,9 @@ namespace TodoApi.Application.Common.MappingProfiles
 		public TodoProfile()
 		{
 			CreateMap<CreateTodoCommand, Todo>();
-			CreateMap<Todo, TodoModel>();
+            CreateMap<UpdateTodoCommand, Todo>();
+            CreateMap<Todo, TodoModel>();
+			CreateMap<Todo, TodoCreatedMessage>();
 		}
 	}
 }

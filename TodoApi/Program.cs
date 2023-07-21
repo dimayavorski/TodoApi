@@ -1,6 +1,6 @@
-﻿using TodoApi.Infrastructure.Enums;
-using TodoApi.Infrastructure.Options;
-using TodoApi.Application;
+﻿using TodoApi.Application;
+using TodoApi.Application.Common.Enums;
+using TodoApi.Application.Common.Options;
 using TodoApi.Infrastructure;
 
 namespace TodoApi;
@@ -33,7 +33,7 @@ public class Program
         //builder.Services.AddHostedService<HostedMessageConsumer>();
 
         builder.Services.AddApplicationServices();
-        builder.Services.AddInfrastructureServices(appSettings);
+        builder.Services.AddInfrastructureServices(appSettings, builder.Configuration);
 
 
         var app = builder.Build();
