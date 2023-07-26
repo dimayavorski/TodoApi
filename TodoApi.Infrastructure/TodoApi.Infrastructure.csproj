@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MessageConsumer\" />
     <None Remove="Secrets\" />
     <None Remove="Services\" />
     <None Remove="Services\Aws\" />
@@ -17,9 +16,9 @@
     <None Remove="Repositories\Azure\" />
     <None Remove="Repositories\Aws\" />
     <None Remove="Factories\" />
+    <None Remove="ConfigurationProviders\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MessageConsumer\" />
     <Folder Include="Secrets\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Aws\" />
@@ -28,6 +27,7 @@
     <Folder Include="Repositories\Azure\" />
     <Folder Include="Repositories\Aws\" />
     <Folder Include="Factories\" />
+    <Folder Include="ConfigurationProviders\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.SQS" Version="3.7.103.7" />
@@ -41,6 +41,9 @@
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.200.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.200.4" />
+    <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProfileApi.Core\ProfileApi.Core.csproj" />

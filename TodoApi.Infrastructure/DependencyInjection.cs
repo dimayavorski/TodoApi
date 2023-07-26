@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.Runtime;
 using Amazon.S3;
+using Amazon.SecretsManager;
 using Amazon.SimpleNotificationService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,17 +17,23 @@ using TodoApi.Infrastructure.Secrets;
 using TodoApi.Infrastructure.Services;
 using TodoApi.Infrastructure.Services.Aws;
 using TodoApi.Infrastructure.Services.Azure;
+using TodoApi.Infrastructure.ConfigurationProviders;
+using TodoApi.Infrastructure.MessageConsumer;
+using Amazon.SQS;
 
 namespace TodoApi.Infrastructure
 {
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection serviceCollection, AppSettings appSettings,
-            IConfiguration configuration)
+            IConfigurationBuilder configurationBuilder)
         {
             serviceCollection.AddSingleton<IFileServiceFactory, FileServiceFactory>();
             serviceCollection.AddSingleton<IRepositoryFactory, RepositoryFactory>();
             serviceCollection.AddSingleton<IMessagePublisherFactory, MessagePublisherServiceFactory>();
+            serviceCollection.AddSingleton<IMessageConsumerFactory, MessageConsumerFactory>();
+            serviceCollection.AddSingleton<ICredentialsService, CredentialsService>();
+            
             if (appSettings.EnvironmentType.ToString().StartsWith(EnvironmentType.AWS.ToString()))
             {
                 var credentialsService = serviceCollection.BuildServiceProvider().GetRequiredService<ICredentialsService>();
@@ -36,9 +43,8 @@ namespace TodoApi.Infrastructure
                 serviceCollection.AddSingleton<IAmazonS3, AmazonS3Client>();
                 serviceCollection.AddS3Service(credentials);
                 serviceCollection.AddDynamoDbServices(credentials);
-                serviceCollection.AddSnsServices(credentials, configuration);
-
-
+                serviceCollection.AddSnsServices(credentials, configurationBuilder.Build());
+                configurationBuilder.AddAwsSecretsServices(credentials);
             }
             else
             {
@@ -52,7 +58,7 @@ namespace TodoApi.Infrastructure
 
             var config = new AmazonS3Config
             {
-                RegionEndpoint = Amazon.RegionEndpoint.EUWest2
+                RegionEndpoint = Amazon.RegionEndpoint.EUWest2,
             };
             var awsS3Client = new AmazonS3Client(credentials, config);
             serviceCollection.AddSingleton<IAmazonS3>(awsS3Client);
@@ -78,6 +84,23 @@ namespace TodoApi.Infrastructure
             return serviceCollection;
         }
 
+        public static IServiceCollection AddSQSServices(this IServiceCollection serviceCollection, AWSCredentials credentials,
+           IConfiguration configuration)
+        {
+
+            var config = new AmazonSQSConfig
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.EUWest2
+            };
+            var awsS3Client = new AmazonSQSClient(credentials, config);
+            serviceCollection.AddSingleton<IAmazonSQS>(awsS3Client);
+            serviceCollection.AddSingleton<AwsMessageConsumerService>();
+            serviceCollection.Configure<SqsOptions>(configuration.GetSection(nameof(SqsOptions)));
+
+
+            return serviceCollection;
+        }
+
         public static IServiceCollection AddAzureBlobStorageService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<AzureBlobStorageFileService>();
@@ -97,6 +120,20 @@ namespace TodoApi.Infrastructure
             serviceCollection.AddSingleton<TodoRepositoryDynamoDb>();
 
             return serviceCollection;
+        }
+
+        public static IConfigurationBuilder AddAwsSecretsServices(this IConfigurationBuilder builder, AWSCredentials credentials)
+        {
+
+            var config = new AmazonSecretsManagerConfig
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.EUWest2
+            };
+
+            var configurationSource = new AmazonConfigurationSource(config, credentials);
+
+            builder.Add(configurationSource);
+            return builder;
         }
     }
 }

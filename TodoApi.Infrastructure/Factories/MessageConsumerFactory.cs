@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TodoApi.Application.Common.Enums;
@@ -7,35 +8,32 @@ using TodoApi.Application.Common.Options;
 using TodoApi.Application.Common.Options.Aws;
 using TodoApi.Application.Common.Options.Azure;
 using TodoApi.Infrastructure.Services.Aws;
+using TodoApi.Infrastructure.Services.Azure;
 
 namespace TodoApi.Infrastructure.MessageConsumer
 {
     public class MessageConsumerFactory : IMessageConsumerFactory
 	{
-        private readonly ILogger<MessageConsumerFactory> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IMediator _mediator;
-        public MessageConsumerFactory(ILogger<MessageConsumerFactory> logger, IServiceProvider serviceProvider, IMediator mediator)
+        private readonly AppSettings _appSettings;
+        public MessageConsumerFactory(IServiceProvider serviceProvider, AppSettings appSettings)
         {
-            _logger = logger;
             _serviceProvider = serviceProvider;
-            _mediator = mediator;
+            _appSettings = appSettings;
+  
         }
-
-        
 
         public IMessageConsumerService CreateConsumer(AppSettings appSettings)
         {
-            if (appSettings.EnvironmentType == EnvironmentType.Azure)
+            return _appSettings.EnvironmentType switch
             {
-                IOptions<AzureServiceBusOptions> azureServiceBustOptions = (IOptions<AzureServiceBusOptions>)_serviceProvider.GetService(typeof(IOptions<AzureServiceBusOptions>)) !;
-                if(azureServiceBustOptions != null)
-                    return new AzureMessageConsumerService(_logger, azureServiceBustOptions);
-            }
-            var sqsOptions = (IOptions<SqsOptions>)_serviceProvider.GetService(typeof(IOptions<SqsOptions>))!;
-            var credentialsOptions = (IOptions<AwsCredentialsOptions>)_serviceProvider.GetService(typeof(IOptions<AwsCredentialsOptions>))!;
-            return new AwsMessageConsumerService(_logger,_mediator, sqsOptions, credentialsOptions);
-            
+                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                    => (IMessageConsumerService)_serviceProvider.GetRequiredService(typeof(AwsMessageConsumerService)),
+                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                   => (IMessageConsumerService)_serviceProvider.GetRequiredService(typeof(AzureMessageConsumerService)),
+                _ => throw new NotImplementedException("There is no consumer service implementation for this configuration")
+
+            };
         }
     }
 }

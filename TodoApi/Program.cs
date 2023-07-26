@@ -1,7 +1,9 @@
-﻿using TodoApi.Application;
+﻿using Microsoft.Extensions.DependencyInjection;
+using TodoApi.Application;
 using TodoApi.Application.Common.Enums;
 using TodoApi.Application.Common.Options;
 using TodoApi.Infrastructure;
+using TodoApi.Infrastructure.Secrets;
 
 namespace TodoApi;
 
@@ -20,7 +22,8 @@ public class Program
         }
         appSettings.EnvironmentType = (EnvironmentType)environmentType;
 
-        builder.Services.AddCloudTypeBasedSettings(builder.Configuration, appSettings);
+        builder.Services.AddSingleton(appSettings);
+
 
         // Add services to the container.
         
@@ -34,6 +37,9 @@ public class Program
 
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(appSettings, builder.Configuration);
+
+
+        
 
 
         var app = builder.Build();

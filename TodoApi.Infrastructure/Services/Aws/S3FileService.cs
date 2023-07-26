@@ -9,7 +9,7 @@ namespace TodoApi.Infrastructure.Services.Aws
     public class S3FileService : IFileService
     {
         private readonly IAmazonS3 _s3;
-        private readonly string _bucketName = "todoapistorage";
+        private readonly string _bucketName = "todoapistorage-original";
         public S3FileService(IAmazonS3 s3)
         {
             _s3 = s3;

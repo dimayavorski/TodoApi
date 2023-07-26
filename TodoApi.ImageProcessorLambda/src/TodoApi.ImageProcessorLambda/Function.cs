@@ -72,7 +72,7 @@ public class Function
                 }
                 var putObjectRequest = new PutObjectRequest
                 {
-                    BucketName = "todoapistorage-resized",
+                    BucketName = "todoapistorage-formatted",
                     Key = s3Event.Object.Key,
                     ContentType = response.Headers.ContentType,
                     InputStream = outStream,

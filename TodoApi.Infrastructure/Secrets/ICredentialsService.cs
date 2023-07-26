@@ -4,7 +4,7 @@ namespace TodoApi.Infrastructure.Secrets
 {
     public interface ICredentialsService
 	{
-		AWSCredentials GetCredentials();
+		AWSCredentials GetCredentials(string? profileName = null);
 	}
 }
 

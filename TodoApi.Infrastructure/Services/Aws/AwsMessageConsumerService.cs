@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using Amazon;
-using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using MediatR;
@@ -9,30 +7,26 @@ using Microsoft.Extensions.Options;
 using TodoApi.Application.Common.Interfaces;
 using TodoApi.Application.Common.Models;
 using TodoApi.Application.Common.Options.Aws;
-using TodoApi.Infrastructure.MessageConsumer;
 
 namespace TodoApi.Infrastructure.Services.Aws
 {
     public class AwsMessageConsumerService : IMessageConsumerService
     {
         private IAmazonSQS _amazonSqs;
-        private readonly ILogger<MessageConsumerFactory> _logger;
-        private readonly AwsCredentialsOptions _credentialsOptions;
+        private readonly ILogger<AwsMessageConsumerService> _logger;
         private readonly IMediator _mediator;
-        private SqsOptions _sqsOptions;
-        private string QueueUrl;
-        public AwsMessageConsumerService(ILogger<MessageConsumerFactory> logger, IMediator mediator, IOptions<SqsOptions> options, IOptions<AwsCredentialsOptions> credentialsOptions)
+        private readonly SqsOptions _sqsOptions;
+        private string? QueueUrl;
+        public AwsMessageConsumerService(ILogger<AwsMessageConsumerService> logger, IAmazonSQS amazonSQS, IMediator mediator, IOptions<SqsOptions> options)
         {
             _sqsOptions = options.Value ?? throw new ArgumentNullException(nameof(SqsOptions));
-            _credentialsOptions = credentialsOptions.Value ?? throw new ArgumentNullException(nameof(AwsCredentialsOptions));
             _logger = logger;
             _mediator = mediator;
+            _amazonSqs = amazonSQS;
         }
 
         public async Task Connect()
         {
-
-            _amazonSqs = GetAmazonSQSClient();
 
             var createQueueRequest = new CreateQueueRequest
             {
@@ -92,11 +86,6 @@ namespace TodoApi.Infrastructure.Services.Aws
             }
         }
 
-        private AmazonSQSClient GetAmazonSQSClient() {
-            BasicAWSCredentials basicCredentials = new BasicAWSCredentials(_credentialsOptions.AccessKey, _credentialsOptions.Secret);
-            RegionEndpoint region = RegionEndpoint.GetBySystemName(_credentialsOptions.AwsRegion);
-            return new AmazonSQSClient(basicCredentials, region);
-        }
     }
 }
 

@@ -47,7 +47,7 @@ namespace TodoApi.Infrastructure.Services.Aws
 
         private async ValueTask<string> GetTopicArnAsync()
         {
-            if (_topicArn != null)
+                if (_topicArn != null)
                 return _topicArn;
 
             var queueUrlResponse = await _sns.FindTopicAsync(_snsOptios.TopicName);
