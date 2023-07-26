@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{F90FE66D-D855-462D-A640-D4020B17D224}"
 	ProjectSection(SolutionItems) = preProject
 		Requests.json = Requests.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi", "TodoApi\TodoApi.csproj", "{4681C6E0-4A09-4C63-8D64-8FDF78B32072}"
