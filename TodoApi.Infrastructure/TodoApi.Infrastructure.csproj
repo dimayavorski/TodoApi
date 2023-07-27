@@ -19,18 +19,21 @@
     <None Remove="ConfigurationProviders\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Secrets\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Aws\" />
     <Folder Include="Services\Azure\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Repositories\Azure\" />
     <Folder Include="Repositories\Aws\" />
     <Folder Include="Factories\" />
-    <Folder Include="ConfigurationProviders\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.SQS" Version="3.7.103.7" />
+    <PackageReference Include="Azure.Identity" Version="1.9.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.24" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="MediatR" Version="12.1.0" />
@@ -46,7 +49,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProfileApi.Core\ProfileApi.Core.csproj" />
     <ProjectReference Include="..\TodoApi.Application\TodoApi.Application.csproj" />
   </ItemGroup>
 </Project>

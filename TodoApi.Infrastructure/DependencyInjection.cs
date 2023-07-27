@@ -20,6 +20,9 @@ using TodoApi.Infrastructure.Services.Azure;
 using TodoApi.Infrastructure.ConfigurationProviders;
 using TodoApi.Infrastructure.MessageConsumer;
 using Amazon.SQS;
+using Microsoft.Extensions.Azure;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 
 namespace TodoApi.Infrastructure
 {
@@ -48,6 +51,7 @@ namespace TodoApi.Infrastructure
             }
             else
             {
+                configurationBuilder.AddKeyVaultServices();
                 serviceCollection.AddAzureBlobStorageService();
             }
             return serviceCollection;
@@ -120,6 +124,17 @@ namespace TodoApi.Infrastructure
             serviceCollection.AddSingleton<TodoRepositoryDynamoDb>();
 
             return serviceCollection;
+        }
+
+
+        public static IConfigurationBuilder AddKeyVaultServices(this IConfigurationBuilder builder)
+        {
+            var configuration = builder.Build();
+            string keyVaultUri = configuration.GetValue<string>("KeyVaultUri")!;
+            var variable = Environment.GetEnvironmentVariables();
+            builder.AddAzureKeyVault(keyVaultUri);
+            var connectionString = configuration["ConnectionString"];
+            return builder;
         }
 
         public static IConfigurationBuilder AddAwsSecretsServices(this IConfigurationBuilder builder, AWSCredentials credentials)
