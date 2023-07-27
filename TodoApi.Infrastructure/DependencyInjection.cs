@@ -131,9 +131,7 @@ namespace TodoApi.Infrastructure
         {
             var configuration = builder.Build();
             string keyVaultUri = configuration.GetValue<string>("KeyVaultUri")!;
-            var variable = Environment.GetEnvironmentVariables();
             builder.AddAzureKeyVault(keyVaultUri);
-            var connectionString = configuration["ConnectionString"];
             return builder;
         }
 
