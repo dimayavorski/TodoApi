@@ -23,6 +23,8 @@ using Amazon.SQS;
 using Microsoft.Extensions.Azure;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
+using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography.X509Certificates;
 
 namespace TodoApi.Infrastructure
 {
@@ -36,12 +38,12 @@ namespace TodoApi.Infrastructure
             serviceCollection.AddSingleton<IMessagePublisherFactory, MessagePublisherServiceFactory>();
             serviceCollection.AddSingleton<IMessageConsumerFactory, MessageConsumerFactory>();
             serviceCollection.AddSingleton<ICredentialsService, CredentialsService>();
-            
+
             if (appSettings.EnvironmentType.ToString().StartsWith(EnvironmentType.AWS.ToString()))
             {
                 var credentialsService = serviceCollection.BuildServiceProvider().GetRequiredService<ICredentialsService>();
                 var credentials = credentialsService.GetCredentials();
-                
+
 
                 serviceCollection.AddSingleton<IAmazonS3, AmazonS3Client>();
                 serviceCollection.AddS3Service(credentials);
@@ -51,7 +53,6 @@ namespace TodoApi.Infrastructure
             }
             else
             {
-                configurationBuilder.AddKeyVaultServices();
                 serviceCollection.AddAzureBlobStorageService();
             }
             return serviceCollection;
@@ -83,7 +84,7 @@ namespace TodoApi.Infrastructure
             serviceCollection.AddSingleton<IAmazonSimpleNotificationService>(awsS3Client);
             serviceCollection.AddSingleton<AwsMessagePublisherService>();
             serviceCollection.Configure<AwsSnsOptions>(configuration.GetSection(nameof(AwsSnsOptions)));
-            
+
 
             return serviceCollection;
         }
@@ -131,7 +132,8 @@ namespace TodoApi.Infrastructure
         {
             var configuration = builder.Build();
             string keyVaultUri = configuration.GetValue<string>("KeyVaultUri")!;
-            builder.AddAzureKeyVault(keyVaultUri);
+            builder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+
             return builder;
         }
 

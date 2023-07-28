@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Azure.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using TodoApi.Application;
 using TodoApi.Application.Common.Enums;
 using TodoApi.Application.Common.Options;
@@ -16,7 +17,8 @@ public class Program
         var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var appSettings = new AppSettings();
 
-        builder.Configuration.AddJsonFile("appsettings.AWS.json", true);
+        builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true)
+            .AddKeyVaultServices().AddUserSecrets(typeof(Program).Assembly);
         if(!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType)) {
             throw new ApplicationException("Cannot parse environment type");
         }
@@ -26,7 +28,7 @@ public class Program
 
 
         // Add services to the container.
-        
+
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
