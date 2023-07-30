@@ -1,5 +1,5 @@
-﻿using System;
-using Amazon.DynamoDBv2;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using TodoApi.Application.Common.Interfaces;
 using TodoApi.Core.Entities;
 
@@ -7,46 +7,45 @@ namespace TodoApi.Infrastructure.Repositories.Azure
 {
     public class TodoRepositoryCosmosDb : IRepository
 	{
-		private readonly IAmazonDynamoDB _amazonDybamoDb;
-		public TodoRepositoryCosmosDb(IAmazonDynamoDB amazonDynamoDB)
+		private readonly ApplicationContenxt _applicationContext;
+        private readonly DbSet<Todo> _table;
+		public TodoRepositoryCosmosDb(ApplicationContenxt applicationContext)
 		{
-			_amazonDybamoDb = amazonDynamoDB;
+			_applicationContext = applicationContext;
+            _table = _applicationContext.Set<Todo>();
 		}
 
-        public Task AddTodoAsync(Todo todo)
+        public async Task AddTodoAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            await _table.AddAsync(todo);
         }
 
-        public Task DeleteTodoAsync(Guid id)
+        public async Task DeleteAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            await Task.FromResult(_table.Remove(todo));
         }
 
-        public Task GetAllAsync()
+        public async Task<IEnumerable<Todo>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _table.ToListAsync();
         }
 
-        public Task GetByIdAsync(Guid id)
+        public async Task<Todo> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _table.FirstAsync(e => e.Id == id);
         }
 
-        public Task UpdateAsync(Todo todo)
+        public async Task UpdateAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            await Task.FromResult(_table.Update(todo));
         }
 
-        Task<IEnumerable<Todo>> IRepository.GetAllAsync()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await _applicationContext.SaveChangesAsync();
         }
 
-        Task<Todo> IRepository.GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
 

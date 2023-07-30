@@ -24,7 +24,6 @@
     <Folder Include="Services\Azure\" />
     <Folder Include="Repositories\Azure\" />
     <Folder Include="Repositories\Aws\" />
-    <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.SQS" Version="3.7.103.7" />

@@ -12,7 +12,10 @@ namespace TodoApi
 {
     public static class Extensions
     {
-
+        public static bool IsLocal(this IWebHostEnvironment env)
+        {
+            return env.IsEnvironment(EnvironmentType.AzureLocal.ToString()) || env.IsEnvironment(EnvironmentType.AWSLocal.ToString());
+        }
         public static IApplicationBuilder ConfigureExceptionHandler(this IApplicationBuilder app)
         {
 

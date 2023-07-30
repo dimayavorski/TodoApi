@@ -7,9 +7,10 @@ namespace TodoApi.Application.Common.Interfaces
 	{
 		Task AddTodoAsync(Todo todo);
 		Task UpdateAsync(Todo todo);
-		Task DeleteTodoAsync(Guid id);
+		Task DeleteAsync(Todo todo);
 		Task<IEnumerable<Todo>> GetAllAsync();
 		Task<Todo> GetByIdAsync(Guid id);
+		Task SaveAsync();
 	}
 }
 

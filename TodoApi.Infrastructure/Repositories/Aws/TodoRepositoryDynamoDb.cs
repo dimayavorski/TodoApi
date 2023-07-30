@@ -38,15 +38,15 @@ namespace TodoApi.Infrastructure.Repositories.Aws
 
         }
 
-        public async Task DeleteTodoAsync(Guid id)
+        public async Task DeleteAsync(Todo todo)
         {
             var deleteItemRequest = new DeleteItemRequest
             {
                 TableName = _tableName,
                 Key = new Dictionary<string, AttributeValue>
                 {
-                    { "pk", new AttributeValue { S = id.ToString()} },
-                    { "sk", new AttributeValue { S = id.ToString()} }
+                    { "pk", new AttributeValue { S = todo.Id.ToString()} },
+                    { "sk", new AttributeValue { S = todo.Id.ToString()} }
                 }
             };
 
@@ -98,6 +98,11 @@ namespace TodoApi.Infrastructure.Repositories.Aws
             var itemAsDocumnet = Document.FromAttributeMap(result.Item);
 
             return JsonSerializer.Deserialize<Todo>(itemAsDocumnet.ToJson())!;
+        }
+
+        public Task SaveAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task UpdateAsync(Todo todo)

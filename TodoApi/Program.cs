@@ -1,10 +1,7 @@
-﻿using Azure.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using TodoApi.Application;
+﻿using TodoApi.Application;
 using TodoApi.Application.Common.Enums;
 using TodoApi.Application.Common.Options;
 using TodoApi.Infrastructure;
-using TodoApi.Infrastructure.Secrets;
 
 namespace TodoApi;
 
@@ -17,8 +14,13 @@ public class Program
         var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var appSettings = new AppSettings();
 
-        builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true)
-            .AddKeyVaultServices().AddUserSecrets(typeof(Program).Assembly);
+        builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true).AddUserSecrets(typeof(Program).Assembly);
+
+        if(!builder.Environment.IsLocal()) 
+        {
+            builder.Configuration.AddKeyVaultServices();
+        }
+
         if(!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType)) {
             throw new ApplicationException("Cannot parse environment type");
         }
@@ -27,10 +29,9 @@ public class Program
         builder.Services.AddSingleton(appSettings);
 
 
-        // Add services to the container.
+      
 
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         
@@ -46,11 +47,11 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
-            
-        //}
+        //Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+
+        }
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -63,5 +64,7 @@ public class Program
 
         app.Run();
     }
+
+    
 }
 

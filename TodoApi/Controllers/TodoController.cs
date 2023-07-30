@@ -18,8 +18,8 @@ namespace TodoApi.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             var getAllTodosQuery = new GetAllTodosQuery();
             return Ok(await _mediator.Send(getAllTodosQuery));

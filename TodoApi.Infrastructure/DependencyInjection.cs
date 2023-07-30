@@ -25,6 +25,11 @@ using Azure.Identity;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Azure.Security.KeyVault.Secrets;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+using TodoApi.Application.Common.Options.Azure;
+using TodoApi.Infrastructure.Repositories.Azure;
+using Microsoft.Extensions.Options;
 
 namespace TodoApi.Infrastructure
 {
@@ -38,7 +43,7 @@ namespace TodoApi.Infrastructure
             serviceCollection.AddSingleton<IMessagePublisherFactory, MessagePublisherServiceFactory>();
             serviceCollection.AddSingleton<IMessageConsumerFactory, MessageConsumerFactory>();
             serviceCollection.AddSingleton<ICredentialsService, CredentialsService>();
-
+            var configuration = configurationBuilder.Build();
             if (appSettings.EnvironmentType.ToString().StartsWith(EnvironmentType.AWS.ToString()))
             {
                 var credentialsService = serviceCollection.BuildServiceProvider().GetRequiredService<ICredentialsService>();
@@ -48,12 +53,15 @@ namespace TodoApi.Infrastructure
                 serviceCollection.AddSingleton<IAmazonS3, AmazonS3Client>();
                 serviceCollection.AddS3Service(credentials);
                 serviceCollection.AddDynamoDbServices(credentials);
-                serviceCollection.AddSnsServices(credentials, configurationBuilder.Build());
+                serviceCollection.AddSnsServices(credentials, configuration);
                 configurationBuilder.AddAwsSecretsServices(credentials);
             }
             else
             {
                 serviceCollection.AddAzureBlobStorageService();
+                serviceCollection.AddCosmosDbServices(configuration);
+
+
             }
             return serviceCollection;
         }
@@ -123,6 +131,29 @@ namespace TodoApi.Infrastructure
                 return new AmazonDynamoDBClient(credentials, config);
             });
             serviceCollection.AddSingleton<TodoRepositoryDynamoDb>();
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddCosmosDbServices(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            var cosmosDbOptions = new AzureCosmosDbOptions();
+            configuration.GetSection(nameof(AzureCosmosDbOptions)).Bind(cosmosDbOptions);
+
+
+            if (string.IsNullOrEmpty(cosmosDbOptions.ConnectionString) || string.IsNullOrEmpty(cosmosDbOptions.ContainerName) || string.IsNullOrEmpty(cosmosDbOptions.DatabaseName))
+                throw new ApplicationException("Error while configuring Cosmos Db");
+
+            serviceCollection.Configure<AzureCosmosDbOptions>(options =>
+            {
+                options.ContainerName = cosmosDbOptions.ContainerName;
+                options.ConnectionString = cosmosDbOptions.ConnectionString;
+                options.DatabaseName = cosmosDbOptions.DatabaseName;
+            });
+            serviceCollection.AddDbContext<ApplicationContenxt>();
+               
+
+            serviceCollection.AddTransient<TodoRepositoryCosmosDb>();
 
             return serviceCollection;
         }

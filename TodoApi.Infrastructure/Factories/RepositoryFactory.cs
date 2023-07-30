@@ -5,15 +5,15 @@ using TodoApi.Application.Common.Options;
 using TodoApi.Infrastructure.Repositories.Aws;
 using TodoApi.Infrastructure.Repositories.Azure;
 
-namespace TodoApi.Infrastructure.Repositories
+namespace TodoApi.Infrastructure.Factories
 {
     public class RepositoryFactory : IRepositoryFactory
-	{
+    {
         private readonly AppSettings _appSettings;
         private readonly IServiceProvider _serviceProvider;
 
         public RepositoryFactory(AppSettings appSettings, IServiceProvider serviceProvider)
-		{
+        {
             _appSettings = appSettings;
             _serviceProvider = serviceProvider;
         }

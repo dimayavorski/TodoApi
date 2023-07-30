@@ -22,7 +22,11 @@ namespace TodoApi.Application.Commands.Handlers
         {
 
             var repository = _repositoryFactory.GetRepository();
-            await repository.DeleteTodoAsync(request.Id);
+            var todo = await repository.GetByIdAsync(request.Id);
+            if (todo != null)
+            {
+                await repository.DeleteAsync(todo);
+            }
 
             //TODO send notification to SNS
         }
