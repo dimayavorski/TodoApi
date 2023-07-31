@@ -37,7 +37,7 @@ public class Program
         builder.Services.AddSwaggerGen();
         
 
-        builder.Services.AddHostedService<HostedMessageConsumer>();
+        //builder.Services.AddHostedService<HostedMessageConsumer>();
 
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(appSettings, builder.Configuration);

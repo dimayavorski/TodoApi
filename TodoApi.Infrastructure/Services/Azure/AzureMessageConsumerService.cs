@@ -29,20 +29,14 @@ namespace TodoApi.Infrastructure.MessageConsumer
 
         public async Task ConsumeMessage(CancellationToken cancellationToken)
         {
-            try
-            {
-                var message = await _serviceBusReceiver.ReceiveMessageAsync();
-                if (message != null)
-                {
-                    var body = JsonConvert.DeserializeObject<TodoCreatedMessage>(Encoding.UTF8.GetString(message.Body));
 
-                }
-                await _serviceBusReceiver.CompleteMessageAsync(message);
-            }
-            catch (Exception ex)
+            var message = await _serviceBusReceiver.ReceiveMessageAsync();
+            if (message != null)
             {
+                var body = JsonConvert.DeserializeObject<TodoCreatedMessage>(Encoding.UTF8.GetString(message.Body));
 
             }
+            await _serviceBusReceiver.CompleteMessageAsync(message);
 
         }
 
