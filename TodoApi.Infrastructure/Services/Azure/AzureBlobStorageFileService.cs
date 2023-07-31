@@ -1,13 +1,24 @@
-﻿using System;
+﻿using Azure.Storage.Blobs;
+using Microsoft.Extensions.Options;
+using System;
+using System.Reflection.Metadata;
 using TodoApi.Application.Common.Interfaces;
 using TodoApi.Application.Common.Models;
+using TodoApi.Application.Common.Options.Azure;
 
 namespace TodoApi.Infrastructure.Services.Azure
 {
     public class AzureBlobStorageFileService : IFileService
 	{
-		public AzureBlobStorageFileService()
+        private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+        private readonly BlobServiceClient _blobServiceClient;
+        private readonly BlobContainerClient _blobContainerClient;
+		public AzureBlobStorageFileService(IOptions<AzureBlobStorageOptions> azureBlobStorageOptions, BlobServiceClient blobServiceClient)
 		{
+            _azureBlobStorageOptions = azureBlobStorageOptions.Value ?? throw new ArgumentNullException(nameof(azureBlobStorageOptions));
+            _blobServiceClient = blobServiceClient;
+            _blobContainerClient = _blobServiceClient.GetBlobContainerClient(_azureBlobStorageOptions.ContainerName);
+
 		}
 
         public Task DeleteFileAsync(Guid id)
@@ -20,9 +31,15 @@ namespace TodoApi.Infrastructure.Services.Azure
             throw new NotImplementedException();
         }
 
-        public Task UploadFileAsync(FileModel file)
+        public async Task UploadFileAsync(FileModel file)
         {
-            throw new NotImplementedException();
+            var blobClient = _blobContainerClient.GetBlobClient(file.Id.ToString());
+
+            await using (Stream data = blobClient.OpenRead())
+            {
+                await blobClient.UploadAsync(data);
+            }
+
         }
     }
 }

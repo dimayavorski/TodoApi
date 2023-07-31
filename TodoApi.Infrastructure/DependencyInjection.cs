@@ -24,6 +24,7 @@ using Azure.Identity;
 using TodoApi.Application.Common.Options.Azure;
 using TodoApi.Infrastructure.Repositories.Azure;
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
 
 namespace TodoApi.Infrastructure
 {
@@ -55,6 +56,7 @@ namespace TodoApi.Infrastructure
                 serviceCollection.AddAzureBlobStorageService();
                 serviceCollection.AddCosmosDbServices(configuration);
                 serviceCollection.AddAzureServiceBusServices(configuration);
+                serviceCollection.AddAzureBlobStorageServices(configuration);
 
 
             }
@@ -182,6 +184,23 @@ namespace TodoApi.Infrastructure
             serviceCollection.Configure<AzureServiceBusOptions>(configuration.GetSection(AzureServiceBusOptions.SectionName));
             serviceCollection.AddSingleton<AzureMessagePublisherService>();
             serviceCollection.AddSingleton<AzureMessageConsumerService>();
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddAzureBlobStorageServices(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            var azureBlobStorageOptions = new AzureBlobStorageOptions();
+            configuration.GetSection(AzureBlobStorageOptions.SectionName).Bind(azureBlobStorageOptions);
+            serviceCollection.Configure<AzureBlobStorageOptions>(options =>
+            {
+                options.ServiceUrl = azureBlobStorageOptions.ServiceUrl;
+                options.ContainerName= azureBlobStorageOptions.ContainerName;
+            });
+
+
+            var blobServiceClient = new BlobServiceClient(new Uri(azureBlobStorageOptions.ServiceUrl), new DefaultAzureCredential());
+            serviceCollection.AddSingleton(blobServiceClient);
+
             return serviceCollection;
         }
     }

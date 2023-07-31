@@ -21,12 +21,10 @@
   <ItemGroup>
     <Folder Include="Commands\" />
     <Folder Include="Queries\" />
-    <Folder Include="Common\" />
     <Folder Include="Common\Interfaces\" />
     <Folder Include="Common\MappingProfiles\" />
     <Folder Include="Common\Models\" />
     <Folder Include="Commands\Handlers\" />
-    <Folder Include="Common\Options\" />
     <Folder Include="Common\Enums\" />
     <Folder Include="Common\Messages\" />
   </ItemGroup>

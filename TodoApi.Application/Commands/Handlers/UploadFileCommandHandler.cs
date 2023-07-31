@@ -1,6 +1,4 @@
-﻿using System;
-using FluentResults;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using TodoApi.Application.Common.Interfaces;
 using TodoApi.Application.Common.Models;
