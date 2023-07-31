@@ -47,6 +47,7 @@
     <PackageReference Include="Kralizek.Extensions.Configuration.AWSSecretsManager" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.15.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TodoApi.Application\TodoApi.Application.csproj" />

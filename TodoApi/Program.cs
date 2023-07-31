@@ -1,6 +1,7 @@
 ﻿using TodoApi.Application;
 using TodoApi.Application.Common.Enums;
 using TodoApi.Application.Common.Options;
+using TodoApi.HostedServices;
 using TodoApi.Infrastructure;
 
 namespace TodoApi;
@@ -36,7 +37,7 @@ public class Program
         builder.Services.AddSwaggerGen();
         
 
-        //builder.Services.AddHostedService<HostedMessageConsumer>();
+        builder.Services.AddHostedService<HostedMessageConsumer>();
 
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(appSettings, builder.Configuration);

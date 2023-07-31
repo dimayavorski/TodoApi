@@ -20,16 +20,10 @@ using TodoApi.Infrastructure.Services.Azure;
 using TodoApi.Infrastructure.ConfigurationProviders;
 using TodoApi.Infrastructure.MessageConsumer;
 using Amazon.SQS;
-using Microsoft.Extensions.Azure;
 using Azure.Identity;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
-using Azure.Security.KeyVault.Secrets;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using TodoApi.Application.Common.Options.Azure;
 using TodoApi.Infrastructure.Repositories.Azure;
-using Microsoft.Extensions.Options;
+using Azure.Messaging.ServiceBus;
 
 namespace TodoApi.Infrastructure
 {
@@ -60,6 +54,7 @@ namespace TodoApi.Infrastructure
             {
                 serviceCollection.AddAzureBlobStorageService();
                 serviceCollection.AddCosmosDbServices(configuration);
+                serviceCollection.AddAzureServiceBusServices(configuration);
 
 
             }
@@ -138,7 +133,7 @@ namespace TodoApi.Infrastructure
         public static IServiceCollection AddCosmosDbServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             var cosmosDbOptions = new AzureCosmosDbOptions();
-            configuration.GetSection(nameof(AzureCosmosDbOptions)).Bind(cosmosDbOptions);
+            configuration.GetSection(AzureCosmosDbOptions.SectionName).Bind(cosmosDbOptions);
 
 
             if (string.IsNullOrEmpty(cosmosDbOptions.ConnectionString) || string.IsNullOrEmpty(cosmosDbOptions.ContainerName) || string.IsNullOrEmpty(cosmosDbOptions.DatabaseName))
@@ -180,6 +175,14 @@ namespace TodoApi.Infrastructure
 
             builder.Add(configurationSource);
             return builder;
+        }
+
+        public static IServiceCollection AddAzureServiceBusServices(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection.Configure<AzureServiceBusOptions>(configuration.GetSection(AzureServiceBusOptions.SectionName));
+            serviceCollection.AddSingleton<AzureMessagePublisherService>();
+            serviceCollection.AddSingleton<AzureMessageConsumerService>();
+            return serviceCollection;
         }
     }
 }

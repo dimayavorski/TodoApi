@@ -34,10 +34,10 @@ namespace TodoApi.Application.Queries
             await repository.AddTodoAsync(todo);
             await repository.SaveAsync();
 
-            //var messagePublisherService = _messagePublisherFactory.GetMessagePublisher();
-            //var message = _mapper.Map<TodoCreatedMessage>(todo);
-            //message.CreatedAt = DateTime.UtcNow;
-            //await messagePublisherService.PublishMessage<TodoCreatedMessage>(message);
+            var messagePublisherService = _messagePublisherFactory.GetMessagePublisher();
+            var message = _mapper.Map<TodoCreatedMessage>(todo);
+            message.CreatedAt = DateTime.UtcNow;
+            await messagePublisherService.PublishMessage<TodoCreatedMessage>(message);
             
             return todo.Id;
         }
