@@ -35,8 +35,9 @@ namespace TodoApi.Infrastructure.Services.Azure
         {
             var blobClient = _blobContainerClient.GetBlobClient(file.Id.ToString());
 
-            await using (Stream data = blobClient.OpenRead())
+            await using (Stream data = await blobClient.OpenReadAsync())
             {
+                //_blobContainerClient.UploadBlob("", file.FileStream);
                 await blobClient.UploadAsync(data);
             }
 
