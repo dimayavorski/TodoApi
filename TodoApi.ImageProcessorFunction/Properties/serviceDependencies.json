@@ -3,17 +3,12 @@
     "appInsights1": {
       "type": "appInsights"
     },
-    "storage1": {
-      "type": "storage",
-      "connectionId": "AzureWebJobsStorage"
-    },
     "secrets1": {
       "type": "secrets"
     },
-    "storage2": {
+    "storage1": {
       "type": "storage",
-      "connectionId": "BlobStorageConnectionString",
-      "dynamicId": null
+      "connectionId": "BlobStorageConnectionString"
     }
   }
 }
