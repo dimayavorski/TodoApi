@@ -8,13 +8,12 @@ using SixLabors.ImageSharp.Processing;
 
 namespace TodoApi.ImageProcessorFunction
 {
-    [StorageAccount("BlobStorageConnectionString")]
     public class ImageProcessorLambda
     {
         [FunctionName("ImageProcessorLambda")]
         public async Task Run(
-            [BlobTrigger("images/{name}")]Stream myBlob,
-            [Blob("imagesresized/{name}", FileAccess.Write)]Stream outputBlob,
+            [BlobTrigger("images/{name}", Connection = "BlobStorageConnectionString")]Stream myBlob,
+            [Blob("imagesresized/{name}", FileAccess.Write, Connection = "BlobStorageConnectionString")]Stream outputBlob,
             string name, ILogger log)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
