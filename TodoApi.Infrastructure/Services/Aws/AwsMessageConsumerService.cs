@@ -16,7 +16,6 @@ namespace TodoApi.Infrastructure.Services.Aws
         private readonly ILogger<AwsMessageConsumerService> _logger;
         private readonly IMediator _mediator;
         private readonly SqsOptions _sqsOptions;
-        private string? QueueUrl;
         public AwsMessageConsumerService(ILogger<AwsMessageConsumerService> logger, IAmazonSQS amazonSQS, IMediator mediator, IOptions<SqsOptions> options)
         {
             _sqsOptions = options.Value ?? throw new ArgumentNullException(nameof(SqsOptions));
@@ -25,29 +24,11 @@ namespace TodoApi.Infrastructure.Services.Aws
             _amazonSqs = amazonSQS;
         }
 
-        public async Task Connect()
-        {
-
-            var createQueueRequest = new CreateQueueRequest
-            {
-                QueueName = _sqsOptions.QueueName
-            };
-            //Move Queue Creation
-            var queueRespnse = await _amazonSqs.CreateQueueAsync(createQueueRequest);
-            QueueUrl = queueRespnse.QueueUrl;
-
-            if (queueRespnse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new InvalidOperationException("Failed to create queue");
-            }
-        }
-
         public async Task ConsumeMessage(CancellationToken cancellationToken)
         {
-
             var receiveMessageRequest = new ReceiveMessageRequest
             {
-                QueueUrl = QueueUrl,
+                QueueUrl = _sqsOptions.QueueUrl,
                 AttributeNames = new List<string> { "All" },
                 MessageAttributeNames = new List<string> { "All" },
                 MaxNumberOfMessages = 5
@@ -57,7 +38,6 @@ namespace TodoApi.Infrastructure.Services.Aws
             {
                 try
                 {
-                    
                     var deserealizedMessageType = JsonSerializer.Deserialize<BaseQueueMessage>(message.Body)?.MessageType;
                     var typeNamespace = $"ProfileApi.Infrastructure.Messages.{deserealizedMessageType}";
                     var type = Type.GetType(typeNamespace);
@@ -71,7 +51,7 @@ namespace TodoApi.Infrastructure.Services.Aws
 
                     await _mediator.Send(typedMessage, cancellationToken);
 
-                    var deleteMessageResponse = await _amazonSqs.DeleteMessageAsync(QueueUrl, message.ReceiptHandle, cancellationToken);
+                    var deleteMessageResponse = await _amazonSqs.DeleteMessageAsync(_sqsOptions.QueueUrl, message.ReceiptHandle, cancellationToken);
 
                     if (deleteMessageResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
                     {

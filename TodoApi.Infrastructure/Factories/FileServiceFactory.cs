@@ -21,9 +21,9 @@ namespace TodoApi.Infrastructure.Services
         {
             return _appSettings.EnvironmentType switch
             {
-                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                EnvironmentType.AWS or EnvironmentType.AWSLocal
                     => (IFileService)_serviceProvider.GetRequiredService(typeof(S3FileService)),
-                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                EnvironmentType.Azure or EnvironmentType.AzureLocal
                    => (IFileService)_serviceProvider.GetRequiredService(typeof(AzureBlobStorageFileService)),
                 _ => throw new NotImplementedException("There is no file service implementation for this configuration")
 

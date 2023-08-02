@@ -28,7 +28,7 @@ namespace TodoApi.Controllers
 
 
         [HttpPost("{id:guid}")]
-        public async Task<IActionResult> Post(Guid id, [FromForm]IFormFile file)
+        public async Task<IActionResult> Post(Guid id, IFormFile file)
         {
             var uploadFileCommand = new UploadFileCommand(file, id);
             await _mediator.Send(uploadFileCommand);

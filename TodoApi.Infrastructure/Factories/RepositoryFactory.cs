@@ -22,11 +22,11 @@ namespace TodoApi.Infrastructure.Factories
         {
             return _appSettings.EnvironmentType switch
             {
-                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                EnvironmentType.AWS or EnvironmentType.AWSLocal
                     => (IRepository)_serviceProvider.GetRequiredService(typeof(TodoRepositoryDynamoDb)),
-                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                EnvironmentType.Azure or EnvironmentType.AzureLocal
                    => (IRepository)_serviceProvider.GetRequiredService(typeof(TodoRepositoryCosmosDb)),
-                _ => throw new NotImplementedException("There is no repository   implementation for this configuration")
+                _ => throw new NotImplementedException($"There is no repository implementation for this configuration " + _appSettings.EnvironmentType.ToString())
 
             };
         }

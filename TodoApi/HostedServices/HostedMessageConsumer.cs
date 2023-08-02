@@ -16,13 +16,9 @@ namespace TodoApi.HostedServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var consumer = _messageConsumerFactory.CreateConsumer(_appSettings);
-            await consumer.Connect();
-            while(!stoppingToken.IsCancellationRequested) {
-
-
+            while(!stoppingToken.IsCancellationRequested) 
+            {
                 await consumer.ConsumeMessage(stoppingToken);
-
-
                 await Task.Delay(1000, stoppingToken);
             }
         }

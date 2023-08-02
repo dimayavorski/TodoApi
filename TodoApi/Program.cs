@@ -17,55 +17,39 @@ public class Program
 
         builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true).AddUserSecrets(typeof(Program).Assembly);
 
-        if(!builder.Environment.IsLocal()) 
+        if (!builder.Environment.IsLocal())
         {
             builder.Configuration.AddKeyVaultServices();
         }
 
-        if(!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType)) {
+        if (!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType))
+        {
             throw new ApplicationException("Cannot parse environment type");
         }
+
         appSettings.EnvironmentType = (EnvironmentType)environmentType;
-
         builder.Services.AddSingleton(appSettings);
-
-
-      
-
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        
 
         //builder.Services.AddHostedService<HostedMessageConsumer>();
-
         builder.Services.AddApplicationServices();
         builder.Services.AddInfrastructureServices(appSettings, builder.Configuration);
 
-
-        
-
-
         var app = builder.Build();
-
-        //Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-
-        }
         app.UseSwagger();
         app.UseSwaggerUI();
-
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
         app.ConfigureExceptionHandler();
 
         app.MapControllers();
 
         app.Run();
+
     }
 
-    
+
 }
 

@@ -22,14 +22,8 @@ namespace TodoApi.Infrastructure.MessageConsumer
             _serviceBusReceiver = _serviceBusClient.CreateReceiver(_serviceBusOptions.SubscriberName);
         }
 
-        public Task Connect()
-        {
-            return Task.CompletedTask;
-        }
-
         public async Task ConsumeMessage(CancellationToken cancellationToken)
         {
-
             var message = await _serviceBusReceiver.ReceiveMessageAsync();
             if (message != null)
             {
@@ -37,7 +31,6 @@ namespace TodoApi.Infrastructure.MessageConsumer
 
             }
             await _serviceBusReceiver.CompleteMessageAsync(message);
-
         }
 
 

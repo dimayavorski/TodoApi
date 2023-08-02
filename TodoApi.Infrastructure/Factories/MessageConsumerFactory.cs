@@ -27,9 +27,9 @@ namespace TodoApi.Infrastructure.MessageConsumer
         {
             return _appSettings.EnvironmentType switch
             {
-                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                EnvironmentType.AWS or EnvironmentType.AWSLocal
                     => (IMessageConsumerService)_serviceProvider.GetRequiredService(typeof(AwsMessageConsumerService)),
-                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                EnvironmentType.Azure or EnvironmentType.AzureLocal
                    => (IMessageConsumerService)_serviceProvider.GetRequiredService(typeof(AzureMessageConsumerService)),
                 _ => throw new NotImplementedException("There is no consumer service implementation for this configuration")
 

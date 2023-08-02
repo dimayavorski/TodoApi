@@ -9,11 +9,11 @@ using TodoApi.Infrastructure.Services.Azure;
 namespace TodoApi.Infrastructure.Factories
 {
     public class SecretsServiceFactory : ISecretsServiceFactory
-	{
+    {
         private readonly AppSettings _appSettings;
         private readonly IServiceProvider _serviceProvider;
         public SecretsServiceFactory(AppSettings appSettings, IServiceProvider serviceProvider)
-		{
+        {
             _appSettings = appSettings;
             _serviceProvider = serviceProvider;
         }
@@ -22,9 +22,9 @@ namespace TodoApi.Infrastructure.Factories
         {
             return _appSettings.EnvironmentType switch
             {
-                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                EnvironmentType.AWS or EnvironmentType.AWSLocal
                     => (ISecretsService)_serviceProvider.GetRequiredService(typeof(AwsSecretsService)),
-                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                EnvironmentType.Azure or EnvironmentType.AzureLocal
                    => (ISecretsService)_serviceProvider.GetRequiredService(typeof(AzureSecretsService)),
                 _ => throw new NotImplementedException("There is no secrets service implementation for this configuration")
 

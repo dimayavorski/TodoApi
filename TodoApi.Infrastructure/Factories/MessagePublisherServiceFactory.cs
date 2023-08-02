@@ -22,9 +22,9 @@ namespace TodoApi.Infrastructure.Factories
         {
             return _appSettings.EnvironmentType switch
             {
-                EnvironmentType.AWS | EnvironmentType.AWSLocal
+                EnvironmentType.AWS or EnvironmentType.AWSLocal
                     => (IMessagePublisherService)_serviceProvider.GetRequiredService(typeof(AwsMessagePublisherService)),
-                EnvironmentType.Azure | EnvironmentType.AzureLocal
+                EnvironmentType.Azure or EnvironmentType.AzureLocal
                    => (IMessagePublisherService)_serviceProvider.GetRequiredService(typeof(AzureMessagePublisherService)),
                 _ => throw new NotImplementedException("There is no file service implementation for this configuration")
 

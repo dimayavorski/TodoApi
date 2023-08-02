@@ -12,7 +12,7 @@ using TodoApi.Core.Entities;
 
 namespace TodoApi.Infrastructure.Repositories
 {
-    public class ApplicationContenxt: DbContext
+    public class ApplicationContenxt : DbContext
     {
         private readonly AzureCosmosDbOptions _azureCosmosDbOptions;
         public DbSet<Todo> Todos { get; set; }
@@ -31,7 +31,6 @@ namespace TodoApi.Infrastructure.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           
             optionsBuilder.UseCosmos(_azureCosmosDbOptions.ConnectionString, _azureCosmosDbOptions.DatabaseName);
         }
     }

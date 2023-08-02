@@ -5,7 +5,6 @@ namespace TodoApi.Application.Common.Options.AWS
 	{
 		public required string TopicName { get; set; }
 		public required string QueueName { get; set; }
-
 	}
 }
 
