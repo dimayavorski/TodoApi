@@ -43,8 +43,6 @@ namespace TodoApi.Infrastructure
             {
                 var credentialsService = serviceCollection.BuildServiceProvider().GetRequiredService<ICredentialsService>();
                 var credentials = credentialsService.GetCredentials();
-
-
                 serviceCollection.AddSingleton<IAmazonS3, AmazonS3Client>();
                 serviceCollection.AddS3Service(credentials);
                 serviceCollection.AddDynamoDbServices(credentials);
@@ -57,8 +55,6 @@ namespace TodoApi.Infrastructure
                 serviceCollection.AddCosmosDbServices(configuration);
                 serviceCollection.AddAzureServiceBusServices(configuration);
                 serviceCollection.AddAzureBlobStorageServices(configuration);
-
-
             }
             return serviceCollection;
         }
@@ -137,7 +133,6 @@ namespace TodoApi.Infrastructure
             var cosmosDbOptions = new AzureCosmosDbOptions();
             configuration.GetSection(AzureCosmosDbOptions.SectionName).Bind(cosmosDbOptions);
 
-
             if (string.IsNullOrEmpty(cosmosDbOptions.ConnectionString) || string.IsNullOrEmpty(cosmosDbOptions.ContainerName) || string.IsNullOrEmpty(cosmosDbOptions.DatabaseName))
                 throw new ApplicationException("Error while configuring Cosmos Db");
 
@@ -148,7 +143,7 @@ namespace TodoApi.Infrastructure
                 options.DatabaseName = cosmosDbOptions.DatabaseName;
             });
             serviceCollection.AddDbContext<ApplicationContenxt>();
-               
+
 
             serviceCollection.AddTransient<TodoRepositoryCosmosDb>();
 
@@ -167,15 +162,14 @@ namespace TodoApi.Infrastructure
 
         public static IConfigurationBuilder AddAwsSecretsServices(this IConfigurationBuilder builder, AWSCredentials credentials)
         {
-
             var config = new AmazonSecretsManagerConfig
             {
                 RegionEndpoint = Amazon.RegionEndpoint.EUWest2
             };
 
             var configurationSource = new AmazonConfigurationSource(config, credentials);
-
             builder.Add(configurationSource);
+
             return builder;
         }
 
@@ -184,6 +178,7 @@ namespace TodoApi.Infrastructure
             serviceCollection.Configure<AzureServiceBusOptions>(configuration.GetSection(AzureServiceBusOptions.SectionName));
             serviceCollection.AddSingleton<AzureMessagePublisherService>();
             serviceCollection.AddSingleton<AzureMessageConsumerService>();
+
             return serviceCollection;
         }
 
@@ -194,9 +189,8 @@ namespace TodoApi.Infrastructure
             serviceCollection.Configure<AzureBlobStorageOptions>(options =>
             {
                 options.ServiceUrl = azureBlobStorageOptions.ServiceUrl;
-                options.ContainerName= azureBlobStorageOptions.ContainerName;
+                options.ContainerName = azureBlobStorageOptions.ContainerName;
             });
-
 
             var blobServiceClient = new BlobServiceClient(new Uri(azureBlobStorageOptions.ServiceUrl), new DefaultAzureCredential());
             serviceCollection.AddSingleton(blobServiceClient);

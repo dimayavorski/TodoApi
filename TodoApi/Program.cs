@@ -1,4 +1,5 @@
-﻿using TodoApi.Application;
+﻿using Microsoft.OpenApi.Models;
+using TodoApi.Application;
 using TodoApi.Application.Common.Enums;
 using TodoApi.Application.Common.Options;
 using TodoApi.HostedServices;
@@ -11,11 +12,14 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        using var serviceProvider = builder.Services.BuildServiceProvider();
+        var logger = serviceProvider.GetService<ILogger<Program>>()!;
 
         var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var appSettings = new AppSettings();
-
         builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true).AddUserSecrets(typeof(Program).Assembly);
+
+        logger.LogInformation($"Application configuration {currentEnv}");
 
         if (!builder.Environment.IsLocal())
         {
@@ -43,7 +47,6 @@ public class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.ConfigureExceptionHandler();
-
         app.MapControllers();
 
         app.Run();
