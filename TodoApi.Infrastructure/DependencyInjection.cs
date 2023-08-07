@@ -41,13 +41,10 @@ namespace TodoApi.Infrastructure
             var configuration = configurationBuilder.Build();
             if (appSettings.EnvironmentType.ToString().StartsWith(EnvironmentType.AWS.ToString()))
             {
-                var credentialsService = serviceCollection.BuildServiceProvider().GetRequiredService<ICredentialsService>();
-                var credentials = credentialsService.GetCredentials();
                 serviceCollection.AddSingleton<IAmazonS3, AmazonS3Client>();
-                serviceCollection.AddS3Service(credentials);
-                serviceCollection.AddDynamoDbServices(credentials);
-                serviceCollection.AddSnsServices(credentials, configuration);
-                configurationBuilder.AddAwsSecretsServices(credentials);
+                serviceCollection.AddS3Service();
+                serviceCollection.AddDynamoDbServices();
+                serviceCollection.AddSnsServices(configuration);
             }
             else
             {
@@ -59,29 +56,28 @@ namespace TodoApi.Infrastructure
             return serviceCollection;
         }
 
-        public static IServiceCollection AddS3Service(this IServiceCollection serviceCollection, AWSCredentials credentials)
+        public static IServiceCollection AddS3Service(this IServiceCollection serviceCollection)
         {
 
             var config = new AmazonS3Config
             {
                 RegionEndpoint = Amazon.RegionEndpoint.EUWest2,
             };
-            var awsS3Client = new AmazonS3Client(credentials, config);
+            var awsS3Client = new AmazonS3Client(config);
             serviceCollection.AddSingleton<IAmazonS3>(awsS3Client);
             serviceCollection.AddSingleton<S3FileService>();
 
             return serviceCollection;
         }
 
-        public static IServiceCollection AddSnsServices(this IServiceCollection serviceCollection, AWSCredentials credentials,
-            IConfiguration configuration)
+        public static IServiceCollection AddSnsServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
 
             var config = new AmazonSimpleNotificationServiceConfig
             {
                 RegionEndpoint = Amazon.RegionEndpoint.EUWest2
             };
-            var awsS3Client = new AmazonSimpleNotificationServiceClient(credentials, config);
+            var awsS3Client = new AmazonSimpleNotificationServiceClient(config);
             serviceCollection.AddSingleton<IAmazonSimpleNotificationService>(awsS3Client);
             serviceCollection.AddSingleton<AwsMessagePublisherService>();
             serviceCollection.Configure<AwsSnsOptions>(configuration.GetSection(nameof(AwsSnsOptions)));
@@ -90,15 +86,14 @@ namespace TodoApi.Infrastructure
             return serviceCollection;
         }
 
-        public static IServiceCollection AddSQSServices(this IServiceCollection serviceCollection, AWSCredentials credentials,
-           IConfiguration configuration)
+        public static IServiceCollection AddSQSServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
 
             var config = new AmazonSQSConfig
             {
                 RegionEndpoint = Amazon.RegionEndpoint.EUWest2
             };
-            var awsS3Client = new AmazonSQSClient(credentials, config);
+            var awsS3Client = new AmazonSQSClient(config);
             serviceCollection.AddSingleton<IAmazonSQS>(awsS3Client);
             serviceCollection.AddSingleton<AwsMessageConsumerService>();
             serviceCollection.Configure<SqsOptions>(configuration.GetSection(nameof(SqsOptions)));
@@ -113,7 +108,7 @@ namespace TodoApi.Infrastructure
             return serviceCollection;
         }
 
-        public static IServiceCollection AddDynamoDbServices(this IServiceCollection serviceCollection, AWSCredentials credentials)
+        public static IServiceCollection AddDynamoDbServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IAmazonDynamoDB>(sp =>
             {
@@ -121,7 +116,7 @@ namespace TodoApi.Infrastructure
                 {
                     RegionEndpoint = Amazon.RegionEndpoint.EUWest2
                 };
-                return new AmazonDynamoDBClient(credentials, config);
+                return new AmazonDynamoDBClient(config);
             });
             serviceCollection.AddSingleton<TodoRepositoryDynamoDb>();
 
@@ -160,14 +155,9 @@ namespace TodoApi.Infrastructure
             return builder;
         }
 
-        public static IConfigurationBuilder AddAwsSecretsServices(this IConfigurationBuilder builder, AWSCredentials credentials)
+        public static IConfigurationBuilder AddAwsSecretsServices(this IConfigurationBuilder builder)
         {
-            var config = new AmazonSecretsManagerConfig
-            {
-                RegionEndpoint = Amazon.RegionEndpoint.EUWest2
-            };
-
-            var configurationSource = new AmazonConfigurationSource(config, credentials);
+            var configurationSource = new AmazonConfigurationSource();
             builder.Add(configurationSource);
 
             return builder;

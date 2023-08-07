@@ -17,21 +17,28 @@ public class Program
 
         var currentEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var appSettings = new AppSettings();
+        if (!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType))
+        {
+            throw new ApplicationException("Cannot parse environment type");
+        }
+        appSettings.EnvironmentType = (EnvironmentType)environmentType;
         builder.Configuration.AddJsonFile($"appsettings.{currentEnv}.json", true).AddUserSecrets(typeof(Program).Assembly);
 
         logger.LogInformation($"Application configuration {currentEnv}");
 
         if (!builder.Environment.IsLocal())
         {
-            builder.Configuration.AddKeyVaultServices();
+            if(appSettings.EnvironmentType == EnvironmentType.AWS)
+            {
+                builder.Configuration.AddAwsSecretsServices();
+            }
+            else
+            {
+                builder.Configuration.AddKeyVaultServices();
+            }
         }
 
-        if (!Enum.TryParse(typeof(EnvironmentType), currentEnv, true, out var environmentType))
-        {
-            throw new ApplicationException("Cannot parse environment type");
-        }
-
-        appSettings.EnvironmentType = (EnvironmentType)environmentType;
+       
         builder.Services.AddSingleton(appSettings);
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();

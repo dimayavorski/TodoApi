@@ -8,6 +8,12 @@ It can be configured to use 2 different cloud stacks Azure/AWS depending on envi
 
 ## AWS Configuration
 
+### API Gateway
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AwsApiGateway.png?raw=true)
+
+### Elastic BeanStalk
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AwsElasticBeanStalk.png?raw=true)
+
 ### SNS
 ![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AwsSNS.png?raw=true)
 
@@ -26,5 +32,33 @@ It can be configured to use 2 different cloud stacks Azure/AWS depending on envi
 ### S3
 ![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AwsS3.png?raw=true)
 
-## Notes
-Azure part is going to be implemented during the month
+## Azure Configuration
+
+### Api Management Service
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureApiManagement.png?raw=true)
+
+### App Service
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureAppService.png?raw=true)
+
+### Service Bus Topic
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureServiceBusTopic.png?raw=true)
+
+### Service Bus Topic Subscription
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureServiceBusTopicSubscription.png?raw=true)
+
+### Function (ImageProcessor)
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureFunction.png?raw=true)
+
+### CosmosDb
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureCosmosDb.png?raw=true)
+
+### Key Vaults
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureKeyVault.png?raw=true)
+
+### Blob Storage
+![alt text](https://github.com/dimayavorski/TodoApi/blob/main/ReadmeContent/AzureBlobStorage.png?raw=true)
+
+## Comparison
+Genearally, both cloud providers have mostly the same services.
+As a .NET dev, I find Azure more convinient since it has tight integration with Visual Studion.
+In other hand, AWS seems a bit cheeper than Azure.

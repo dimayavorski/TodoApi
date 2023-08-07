@@ -10,12 +10,9 @@ namespace TodoApi.Infrastructure.ConfigurationProviders
 {
 	public class AmazonConfigurationProvider: ConfigurationProvider
 	{
-		private readonly AmazonSecretsManagerConfig _config;
-		private readonly AWSCredentials _credentials;
-		public AmazonConfigurationProvider(AmazonSecretsManagerConfig config, AWSCredentials credentials)
+		public AmazonConfigurationProvider()
 		{
-			_config = config;
-			_credentials = credentials;
+			
 		}
 
         public override void Load()
@@ -34,7 +31,7 @@ namespace TodoApi.Infrastructure.ConfigurationProviders
                 SecretId = $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}",
             };
 
-            using (var client = new AmazonSecretsManagerClient(_credentials, _config))
+            using (var client = new AmazonSecretsManagerClient(region: Amazon.RegionEndpoint.EUWest2))
             {
                 var response = client.GetSecretValueAsync(request).GetAwaiter().GetResult();
 

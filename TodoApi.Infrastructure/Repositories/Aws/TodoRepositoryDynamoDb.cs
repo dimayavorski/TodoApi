@@ -102,7 +102,7 @@ namespace TodoApi.Infrastructure.Repositories.Aws
 
         public Task SaveAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public async Task UpdateAsync(Todo todo)
